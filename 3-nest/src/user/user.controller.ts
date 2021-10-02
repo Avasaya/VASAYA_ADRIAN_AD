@@ -1,39 +1,76 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
-import { get } from 'http';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService:UserService){}
+
+    constructor(private readonly userService:UserService){
+    }
+
+    @Post('/register')
+    register(@Body() body:any ) {
+      console.log(body);
+      return this.userService.register(body);
+    }
 
     @Get('/all')
-    getAll(){
-        return this.userService.getAll(); 
+    getAll(@Body() body:any){
+    return this.userService.getAll();
     }
 
-    @Post('/addUser')
-    addUser(@Body() user: any){
-        return this.userService.addUser(user);
-    }
-    @Put('/:id')
-    replaceUser(@Body() user: any, @Param("id") id:string){
-        return this.userService.replaceUser(user, id);
+    @Get("/:id")
+    getId(@Param('id') id ){
+       return this.userService.getId(id);
     }
 
-    @Get('/:id')
-    searchUser(@Param("id") id: string){
-        return this.userService.searchUser(id);
+   
+    @Put("/:id")
+    editUser(@Param('id') id, @Body() body:any)
+    {
+
+        if(id!=null && body!=null)
+            return this.userService.editUser(id,body);
+        else
+            return "No parameters added";
     }
 
-    @Post('/login')
-    loginUser(@Body("email") email:string, @Body("password") password:string){
-        return this.userService.loginUser(email, password);
+    @Get("search/:term")
+    searchUser(@Param('term') term)
+    {
+        return this.userService.searchUser(term);
     }
 
-    @Delete('/delete/:id')
-    deleteId(@Param("id") id: string){
-        return this.userService.deleteUser(id);
+
+   
+    @Patch("/:id")
+    patchUser(@Param('id') id, @Body() body:any)
+    {
+        if(id!=null && body!=null)
+            return this.userService.patchUser(id,body);
+        else
+            return "No parameters added";
     }
 
     
+    @Delete("/:id")
+    deleteUser(@Param('id') id)
+    {
+        return this.userService.deleteUser(id);
+    }
+
+
+    @Post('/login')
+    logIn(@Body() body : any ) {
+      
+      return this.userService.logIn(body);
+    
+    }
+
+
+
+
+
+
+
+   
 }
