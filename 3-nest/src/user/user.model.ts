@@ -1,4 +1,3 @@
-///import { CRUDReturn } from './crud_return.interface';
 import { Helper } from './helper';
 export class User {
   public id: string;

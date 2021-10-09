@@ -12,9 +12,14 @@ export class User
 {
     
     
-    static toJson() {
-        throw new Error('Method has not been implemented');
+  toJson() {
+    return {
+      id: this.id,
+      name:this.name,
+      age: this.age,
+      email: this.email
     }
+  }
     static values() {
       throw new Error('Method has not been implemented');
   }

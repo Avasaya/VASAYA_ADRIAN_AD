@@ -65,12 +65,4 @@ export class UserController {
       return this.userService.logIn(body);
     
     }
-
-
-
-
-
-
-
-   
 }

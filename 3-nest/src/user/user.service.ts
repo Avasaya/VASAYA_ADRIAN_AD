@@ -1,24 +1,24 @@
+import { CRUDReturn } from './crud_return.interface';
 import { Injectable } from '@nestjs/common';
-import e from 'express';
-import { InformationEvent } from 'http';
 import { User } from './user.module';
 import { v4 as uuidv4 } from 'uuid';
 import { Helper } from './helper';
-
+import * as admin from 'firebase-admin';
+const DEBUG: boolean = true;
 
 @Injectable()
 export class UserService {
     private users : Map<string,User> = new Map<string,User>();
+    private DB = admin.firestore();
     private populatedData : Map<string,User> = Helper.populate();
     
     constructor()
     {
-        console.log("shets");
-
         this.users = Helper.populate();
         console.log(this.users);
     }
-     register(body:any){
+
+    async register(body:any){
         var unDefined;
         var user = null;
         var id = uuidv4();
@@ -31,7 +31,7 @@ export class UserService {
             {
                 return {
                     success: false,
-                    data: "Attribute is missing!"
+                    data: "An Attribute is missing!"
                 }
             }
 
@@ -41,14 +41,14 @@ export class UserService {
             {
                 return {
                     success: false,
-                    data: "Attribute is a wrong type!" 
+                    data: "Attribute has a wrong type!" 
                 } 
             }
 
-            var existingUser = this.getId(body.id);
-            var existingUserEmail = this.searchUser(body.email);
-
-            if (typeof existingUser.data != typeof ""  )
+            var existingUser = await this.getId(body.id);
+            var existingUserEmail = await this.searchUser(body.email);
+            
+            if (typeof existingUser.data != typeof "")
             {
                 return {
                     success: false,
@@ -60,12 +60,12 @@ export class UserService {
             {
                 return{
                     success: false,
-                    data: "Email is already in the database"
+                    data: "Email already exist in database!"
                 } 
             }
         
-            
             user = new User(id , body.name, body.age, body.email, body.password);
+            this.saveToDB(user);
             this.populatedData.set(id, user);
             
         } catch(e)
@@ -86,13 +86,31 @@ export class UserService {
         
     } 
 
-    getAll(){
+    saveToDB(user: User): boolean {
+        try {
+            var hatdog = this.DB.collection("users").doc(user.id).set(user.toJson());
+            console.log(hatdog);
+            this.users.set(user.id, user);
+            return this.users.has(user.id);
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    async getAll(){
 
         var userList = [];
+        this.populatedData = null;  
+        await this.getLatestFromFirebase();  
+
+        
+
+
         this.populatedData.forEach((u)=>
         {
             var user = u;
-            var bodyx = 
+            var bodyy = 
             {
                 id : user.id,
                 name : user.name,
@@ -100,7 +118,7 @@ export class UserService {
                 email : user.email
             }
 
-            userList.push(bodyx);
+            userList.push(bodyy);
         })
 
        return {
@@ -109,9 +127,10 @@ export class UserService {
        }
     }
 
-     getId(id :any){
+    async getId(id :any){
         var data = null;
-
+        this.populatedData = null;  
+        await this.getLatestFromFirebase();
 
         this.populatedData.forEach((u)=>
         {
@@ -139,7 +158,7 @@ export class UserService {
         if(!data)
             return {
                 success: false,
-                data: "ID does not match any user in the databse pls try again"
+                data: "ID is not found in the database, pls try again"
             }
                 
 
@@ -147,7 +166,7 @@ export class UserService {
        return data;
     }
 
-    editUser(id:any, body:any)
+    async editUser(id:any, body:any)
     {
         var unDefined;
         var user = null;
@@ -182,10 +201,10 @@ export class UserService {
                     
             }
 
-            var existingUser = this.getId(body.id).success;
-            var existingUserEmail = this.searchUser(body.email).success; 
+            var existingUser = await this.getId(body.id); 
+            var existingUserEmail = await this.searchUser(body.email);
 
-            if (existingUser ) 
+            if (existingUser.success) 
             {
                 return {
                     success: false,
@@ -193,15 +212,15 @@ export class UserService {
                 }
             }
 
-            if (existingUserEmail)
+            if (existingUserEmail.success)
             {
                 return {
                     success: false,
-                    data: "Email already exist in database!"
+                    data: "Email is already in the database"
                 }
             }
-//hmmmmmm
             var updatedUser = new User(user.id, body.name, body.age, body.email, body.password);
+            this.saveToDB(updatedUser);
             this.populatedData.set(user.id,updatedUser);
 
             updatedUser.password = null;
@@ -222,17 +241,13 @@ export class UserService {
         {
             return {
                 success: false,
-                data: "grrrr"
+                data: "hmmm"
             }
         }
 
-       return {
-           success: false,
-           data: "ok"
-       }
     }
 
-    patchUser(id:any, body:any)
+    async patchUser(id:any, body:any)
     {
 
         var hasChanged = false;
@@ -242,7 +257,7 @@ export class UserService {
             var user = null;
             if ( body.email != null )
             {
-                 existingUserEmail = this.searchUser(body.email).success;
+                existingUserEmail = (await this.searchUser(body.email)).success;
             }
 
             this.populatedData.forEach((u) =>
@@ -304,7 +319,7 @@ export class UserService {
             {
                 return {
                     success: false,
-                    data: "Email already exist in database!"
+                    data: "Email is already in the database"
                 }
             }
         }
@@ -331,6 +346,7 @@ export class UserService {
         if(hasChanged)
         {
             var updatedUser = new User(user.id, user.name, user.age, user.email, user.password);
+            this.saveToDB(updatedUser);
             this.populatedData.set(user.id, updatedUser); 
             return {
                 success: true,
@@ -361,11 +377,14 @@ export class UserService {
        
     }
 
-    searchUser(term : any)
+    async searchUser(term : any)
     {
         var array = [];
         if(this.populatedData == null)
             return null;
+
+            this.populatedData = null;
+            await this.getLatestFromFirebase();  
 
         this.populatedData.forEach((u) =>
         {
@@ -397,28 +416,36 @@ export class UserService {
         }
     }
 
-    deleteUser(id :any)
+    async deleteUser(id :any)
     {
         try{
             var user = null;
+
+            await this.getLatestFromFirebase();
             this.populatedData.forEach((u)=>
             {
-                user = u;
+                if (u.id == id )
+                {
+                    user = u;  
+                }
             })
 
             if(user)
             {
-                if (user.id == id )
-                {
+
+                    
+                    this.DB.collection("users").doc(user.id).delete().then(() => {
+                        console.log("Document has been deleted");
+                    }).catch((error) => {
+                        console.error("sorry we werent able to remove the document: ", error);
+                    });
                     this.populatedData.delete(user.id);
                     return {
                         success: true,
-                        data: "Deleted Successfully, Good Job"
+                        data: "Document has been deleted"
                     };
-                }
                 
             }
-
 
         }catch(e)
         {
@@ -434,15 +461,19 @@ export class UserService {
         };
     }
 
-    logIn( body:any )
+    async logIn( body:any )
     {
         try{
             var authenticatedUser = null;
+            await this.getLatestFromFirebase();
             if(!body)
             return {
                 success: false,
                 data: "No parameters"
             };
+
+
+            
             this.populatedData.forEach((u) =>
             {
                 var user =  u;
@@ -462,7 +493,7 @@ export class UserService {
         {
             return {
                 success: false,
-                data: "Oops there is an error"
+                data: "Sad nay error"
             } 
         }
         if(authenticatedUser !=null) 
@@ -475,11 +506,33 @@ export class UserService {
         else{
             return{
                 success: false,
-                data: "Email or Password is incorrect"
+                data: "Please Check ur email and password"
             } 
         }
 
     }
 
+  async getLatestFromFirebase(){  
+        
+        this.populatedData = new Map<string,User>();
+
+        return new Promise((resolve) =>
+        {
+            this.DB.collection("users").get().then((snapshot)=>
+            {
+                snapshot.forEach((doc) =>
+                {
+                    var data = doc.data();
+                    var user = new User(data.id, data.name,data.age, data.email, data.password);
+    
+                    this.populatedData.set(doc.data().id,user ); 
+                })
+                console.log(this.populatedData);
+                resolve(true);
+            });
+        })
+
+
+    }
 
 }
