@@ -1,5 +1,6 @@
-import { CRUDReturn } from './crud_return.interface';
 import { Injectable } from '@nestjs/common';
+import e from 'express';
+import { InformationEvent } from 'http';
 import { User } from './user.module';
 import { v4 as uuidv4 } from 'uuid';
 import { Helper } from './helper';
@@ -8,22 +9,24 @@ const DEBUG: boolean = true;
 
 @Injectable()
 export class UserService {
+
     private users : Map<string,User> = new Map<string,User>();
     private DB = admin.firestore();
     private populatedData : Map<string,User> = Helper.populate();
     
     constructor()
     {
+        
+
         this.users = Helper.populate();
         console.log(this.users);
     }
-
     async register(body:any){
         var unDefined;
         var user = null;
         var id = uuidv4();
         try{
-        
+             console.log(body);
             
             if (  body.name == unDefined ||
                 body.age == unDefined || body.email == unDefined ||
@@ -31,13 +34,13 @@ export class UserService {
             {
                 return {
                     success: false,
-                    data: "An Attribute is missing!"
+                    data: "Attribute missing!"
                 }
             }
 
-            if ( typeof body.name != typeof "noice" ||
-                typeof body.age != typeof 23 || typeof body.email != typeof "body" ||
-                typeof body.password != typeof "password" )
+            if ( typeof body.name != typeof "Noice" ||
+                typeof body.age != typeof 23 || typeof body.email != typeof "Body" ||
+                typeof body.password != typeof "Password" )
             {
                 return {
                     success: false,
@@ -48,7 +51,7 @@ export class UserService {
             var existingUser = await this.getId(body.id);
             var existingUserEmail = await this.searchUser(body.email);
             
-            if (typeof existingUser.data != typeof "")
+            if (typeof existingUser.data != typeof ""  )
             {
                 return {
                     success: false,
@@ -60,12 +63,12 @@ export class UserService {
             {
                 return{
                     success: false,
-                    data: "Email already exist in database!"
+                    data: "Email is already in the database"
                 } 
             }
         
             user = new User(id , body.name, body.age, body.email, body.password);
-            this.saveToDB(user);
+            this.saveToDb(user);
             this.populatedData.set(id, user);
             
         } catch(e)
@@ -74,7 +77,7 @@ export class UserService {
             console.log(e);
             return {
                 success: false,
-                data : "Oops there is an error"
+                data : "Oops Error"
             };
         }
 
@@ -85,18 +88,6 @@ export class UserService {
         };
         
     } 
-
-    saveToDB(user: User): boolean {
-        try {
-            var hatdog = this.DB.collection("users").doc(user.id).set(user.toJson());
-            console.log(hatdog);
-            this.users.set(user.id, user);
-            return this.users.has(user.id);
-        }catch (error) {
-            console.log(error);
-            return false;
-        }
-    }
 
     async getAll(){
 
@@ -110,7 +101,7 @@ export class UserService {
         this.populatedData.forEach((u)=>
         {
             var user = u;
-            var bodyy = 
+            var bodyx = 
             {
                 id : user.id,
                 name : user.name,
@@ -118,7 +109,7 @@ export class UserService {
                 email : user.email
             }
 
-            userList.push(bodyy);
+            userList.push(bodyx);
         })
 
        return {
@@ -127,7 +118,7 @@ export class UserService {
        }
     }
 
-    async getId(id :any){
+     async getId(id :any){
         var data = null;
         this.populatedData = null;  
         await this.getLatestFromFirebase();
@@ -158,7 +149,7 @@ export class UserService {
         if(!data)
             return {
                 success: false,
-                data: "ID is not found in the database, pls try again"
+                data: "ID does not match with any of our users in the database"
             }
                 
 
@@ -186,13 +177,13 @@ export class UserService {
             {
                 return{
                     success: false,
-                    data: "An Attribute is MISSING!"
+                    data: "Attribute missing!"
                 } 
             }
 
-            if (  typeof body.name != typeof "noice" ||
-                typeof body.age != typeof 23 || typeof body.email != typeof "body" ||
-                typeof body.password != typeof "password" )
+            if (  typeof body.name != typeof "Noice" ||
+                typeof body.age != typeof 23 || typeof body.email != typeof "Body" ||
+                typeof body.password != typeof "Password" )
             {
                 return {
                     success: false,
@@ -200,11 +191,11 @@ export class UserService {
                 }
                     
             }
-
+                
             var existingUser = await this.getId(body.id); 
-            var existingUserEmail = await this.searchUser(body.email);
+            var existingUserEmail = await this.searchUser(body.email); 
 
-            if (existingUser.success) 
+            if (existingUser.success ) 
             {
                 return {
                     success: false,
@@ -219,8 +210,9 @@ export class UserService {
                     data: "Email is already in the database"
                 }
             }
+
             var updatedUser = new User(user.id, body.name, body.age, body.email, body.password);
-            this.saveToDB(updatedUser);
+            this.saveToDb(updatedUser);
             this.populatedData.set(user.id,updatedUser);
 
             updatedUser.password = null;
@@ -241,10 +233,14 @@ export class UserService {
         {
             return {
                 success: false,
-                data: "hmmm"
+                data: "Skkrt false"
             }
         }
 
+       return {
+           success: false,
+           data: "ok"
+       }
     }
 
     async patchUser(id:any, body:any)
@@ -257,7 +253,7 @@ export class UserService {
             var user = null;
             if ( body.email != null )
             {
-                existingUserEmail = (await this.searchUser(body.email)).success;
+                 existingUserEmail = (await this.searchUser(body.email)).success;
             }
 
             this.populatedData.forEach((u) =>
@@ -346,7 +342,7 @@ export class UserService {
         if(hasChanged)
         {
             var updatedUser = new User(user.id, user.name, user.age, user.email, user.password);
-            this.saveToDB(updatedUser);
+            this.saveToDb(updatedUser);
             this.populatedData.set(user.id, updatedUser); 
             return {
                 success: true,
@@ -359,7 +355,7 @@ export class UserService {
         }
         else return {
             success: false,
-            data: "There are no changes"
+            data: "Nothing changed"
         };
         
                   
@@ -370,7 +366,7 @@ export class UserService {
         {
             return {
             success : false,
-            data: "There are no changes"
+            data: "nothing sad"
         };
         }
 
@@ -383,8 +379,9 @@ export class UserService {
         if(this.populatedData == null)
             return null;
 
-            this.populatedData = null;
+            this.populatedData = null;  
             await this.getLatestFromFirebase();  
+        
 
         this.populatedData.forEach((u) =>
         {
@@ -412,7 +409,7 @@ export class UserService {
 
         return {
             success:false,
-            data: "Term is not found in the database"
+            data: "Term does not match any users in database"
         }
     }
 
@@ -420,7 +417,7 @@ export class UserService {
     {
         try{
             var user = null;
-
+    
             await this.getLatestFromFirebase();
             this.populatedData.forEach((u)=>
             {
@@ -435,29 +432,31 @@ export class UserService {
 
                     
                     this.DB.collection("users").doc(user.id).delete().then(() => {
-                        console.log("Document has been deleted");
+                        console.log("Document successfully deleted!");
                     }).catch((error) => {
-                        console.error("sorry we werent able to remove the document: ", error);
+                        console.error("Error removing document: ", error);
                     });
                     this.populatedData.delete(user.id);
                     return {
                         success: true,
-                        data: "Document has been deleted"
+                        data: "Successfully Deleted! ^^"
                     };
                 
             }
 
+
         }catch(e)
         {
+            console.log(e)
             return {
                 success: false,
-                data: "Error : Failure in Deleting"
+                data: "Error : Deletion is a failure"
             };
         }
 
         return {
             success: false,
-            data: "Error : ID user not found"
+            data: "Error : cannot find user ID"
         };
     }
 
@@ -493,7 +492,7 @@ export class UserService {
         {
             return {
                 success: false,
-                data: "Sad nay error"
+                data: "Oops Error"
             } 
         }
         if(authenticatedUser !=null) 
@@ -506,13 +505,25 @@ export class UserService {
         else{
             return{
                 success: false,
-                data: "Please Check ur email and password"
+                data: "Does not exist in database"
             } 
         }
 
     }
 
-  async getLatestFromFirebase(){  
+    saveToDb(user: User): boolean {
+        try {
+            var apple = this.DB.collection("users").doc(user.id).set(user.toJson());
+            console.log(apple);
+            this.users.set(user.id, user);
+            return this.users.has(user.id);
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
+    async getLatestFromFirebase(){  
         
         this.populatedData = new Map<string,User>();
 
@@ -534,5 +545,6 @@ export class UserService {
 
 
     }
+
 
 }

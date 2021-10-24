@@ -1,0 +1,28 @@
+<div class="mainContent">
+    <button (click)="display()"><h2>CLICK TO VIEW LIST</h2></button>
+    <div class="container">
+        <table class="tableDisplay">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>User Age</th>
+                    <th>User Email</th>
+                </tr>
+            </thead>
+            <br>
+            <br>
+            <tbody>
+                <tr *ngFor="let result of requestResult">
+                    <td>{{ result.id }}</td>
+
+                    <td>{{ result.name }}</td>
+
+                    <td>{{ result.age }}</td>
+                    <td>{{ result.email }}</td>
+                    <br><br>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

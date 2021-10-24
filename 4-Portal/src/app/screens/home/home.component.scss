@@ -1,0 +1,68 @@
+.mainContent {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    background-image: url("../assets/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-position-x: relative;
+    background-position-y: relative;
+}
+
+table {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    color: #ffffff;
+    padding: 20px;
+    margin: auto;
+    position: absolute;
+    border-radius: 5px;
+    position: relative;
+    top: 13%;
+    border: 2px solid rgb(1, 20, 49)
+}
+
+th {
+    border-right: 3px solid rgb(255, 255, 255);
+    border-left: 3px solid rgb(255, 255, 255);
+    border-bottom: 3px solid rgb(255, 255, 255);
+    border-top: 3px solid rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.473);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+td {
+    border-right: 3px solid rgb(255, 255, 255);
+    border-left: 3px solid rgb(255, 255, 255);
+    border-bottom: 3px solid rgb(255, 255, 255);
+    border-top: 3px solid rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.473);
+}
+
+button {
+    top: 35%;
+    left: 44.3%;
+    margin: 0;
+    width: 12%;
+    text-align: center;
+    color: black;
+    padding: 2px;
+    border-radius: 10px;
+    position: absolute;
+}
+
+button:hover {
+    background-color: darkslategrey;
+}
+
+.tableDisplay {
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url("../assets/Border.jpg");
+}

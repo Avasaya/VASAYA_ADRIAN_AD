@@ -11,6 +11,13 @@ export class UserController {
     register(@Body() body:any ) {
       console.log(body);
       return this.userService.register(body);
+
+            /*fails if .has attributes of the wrong type
+        is missing an attribute
+        has an invalid attribute key
+        Email already exists in database 
+        */
+    
     }
 
     @Get('/all')
@@ -65,4 +72,12 @@ export class UserController {
       return this.userService.logIn(body);
     
     }
+
+
+
+
+
+
+
+   
 }

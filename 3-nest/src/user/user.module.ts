@@ -12,16 +12,17 @@ export class User
 {
     
     
-  toJson() {
-    return {
-      id: this.id,
-      name:this.name,
-      age: this.age,
-      email: this.email
+    toJson() {
+      return {
+        id: this.id,
+        name:this.name,
+        age: this.age,
+        email: this.email,
+        password: this.password
+      }
     }
-  }
     static values() {
-      throw new Error('Method has not been implemented');
+      throw new Error('Method not implemented.');
   }
     
   public id : string;
