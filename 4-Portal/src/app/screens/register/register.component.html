@@ -17,12 +17,12 @@
       </label>
             <input type="password" name="pass" id="pass" placeholder="Password" formControlName="fcPassword2" />
             <br /><br />
-            <button type="submit" [disabled]="!registerForm.valid" id="createAcc" (click)="register()">
-        CREATE ACCOUNT</button
+            <button class="button1" type="submit" [disabled]="!registerForm.valid" id="createAcc" (click)="registerUser()">
+        REGISTER</button
       ><br /><br />
     </form>
     <div class="actions">
-      <button (click)="nav('login')" id="back">BACK TO LOGIN</button>
+      <button class="button2"(click)="nav('login')" id="back">BACK TO LOGIN</button>
     </div>
 </div>
 </div>

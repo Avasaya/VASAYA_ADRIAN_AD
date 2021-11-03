@@ -1,68 +1,195 @@
 .mainContent {
-    width: 100vw;
-    height: 100vh;
-    display: grid;
     justify-content: center;
     align-content: center;
-    background-image: url("../assets/background.jpg");
+    background-image: url("../assets/3294878.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    background-position-x: relative;
-    background-position-y: relative;
+    height: 100vh;
 }
 
-table {
-    margin: auto;
-    width: 100%;
+.container {
+    padding-top: 8%;
+}
+
+.content-table {
+    border-collapse: collapse;
+    font-size: 0.9em;
     text-align: center;
+    margin: auto;
+    width: 85%;
+}
+
+.content-table thead tr {
+    background-color: #2e2e2e;
     color: #ffffff;
-    padding: 20px;
+    font-weight: bold;
+}
+
+.content-table th,
+.content-table td {
+    padding: 12px 15px;
+}
+
+.content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+    background-color: #cecece;
+}
+
+.content-table tbody tr:nth-of-type(odd) {
+    background-color: #f3f3f3;
+}
+
+.content-table tbody tr:last-of-type {
+    border-bottom: 2px solid #2e2e2e;
+}
+
+.content-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+.sticky {
+    padding-top: 0.5%;
+    padding-bottom: 75px;
+    background-color: #2e2e2e;
+    position: fixed;
+    width: 100vw;
+}
+
+input {
+    width: 50%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    display: block;
+    margin-right: auto;
+    padding-left: 6px;
+}
+
+button:disabled,
+.button1[disabled] {
+    background-color: #2e2e2e;
+    color: grey;
+}
+
+button:disabled,
+.button3[disabled] {
+    background-color: #2e2e2e;
+    color: grey;
+}
+
+h1 {
+    float: left;
+    padding-left: 363px;
+    padding-right: 10px;
+    color: white;
     margin: auto;
-    position: absolute;
-    border-radius: 5px;
-    position: relative;
-    top: 13%;
-    border: 2px solid rgb(1, 20, 49)
 }
 
-th {
-    border-right: 3px solid rgb(255, 255, 255);
-    border-left: 3px solid rgb(255, 255, 255);
-    border-bottom: 3px solid rgb(255, 255, 255);
-    border-top: 3px solid rgb(255, 255, 255);
-    background-color: rgba(0, 0, 0, 0.473);
-    border-radius: 10px;
-    padding: 10px;
-}
-
-td {
-    border-right: 3px solid rgb(255, 255, 255);
-    border-left: 3px solid rgb(255, 255, 255);
-    border-bottom: 3px solid rgb(255, 255, 255);
-    border-top: 3px solid rgb(255, 255, 255);
-    background-color: rgba(0, 0, 0, 0.473);
-}
-
-button {
-    top: 35%;
-    left: 44.3%;
+.button1 {
+    top: 75px;
+    left: 41%;
     margin: 0;
-    width: 12%;
+    width: 13%;
     text-align: center;
-    color: black;
+    color: white;
     padding: 2px;
-    border-radius: 10px;
-    position: absolute;
+    border-radius: 3px;
+    position: fixed;
+    border: none;
+    background-color: #2e2e2e;
+}
+
+.button2 {
+    top: 75px;
+    left: 26%;
+    margin: 0;
+    width: 11%;
+    text-align: center;
+    color: white;
+    padding: 2px;
+    border-radius: 3px;
+    position: fixed;
+    border: none;
+    background-color: #2e2e2e;
+}
+
+.button3 {
+    top: 75px;
+    left: 58%;
+    margin: 0;
+    width: 5%;
+    text-align: center;
+    color: white;
+    padding: 2px;
+    border-radius: 3px;
+    position: fixed;
+    border: none;
+    background-color: #2e2e2e;
+}
+
+.button4 {
+    top: 2px;
+    left: 95.3%;
+    margin: 0;
+    width: 5%;
+    font-size: 0.7em;
+    text-align: center;
+    color: white;
+    padding: 2px;
+    border-radius: 3px;
+    position: fixed;
+    border: none;
+    background-color: #2e2e2e;
+}
+
+.button5 {
+    top: 75px;
+    left: 68%;
+    margin: 0;
+    width: 5%;
+    text-align: center;
+    color: white;
+    padding: 2px;
+    border-radius: 3px;
+    position: fixed;
+    border: none;
+    background-color: #2e2e2e;
 }
 
 button:hover {
-    background-color: darkslategrey;
+    background-color: grey;
 }
 
-.tableDisplay {
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: url("../assets/Border.jpg");
+.register {
+    width: 700px;
+    border-radius: 10px;
+    height: 600px;
+    margin: auto;
+    align-items: center;
+}
+
+input:focus {
+    outline: 0;
+}
+
+.input1 {
+    margin: 2px 83px 30px auto;
+    padding-top: 5px;
+    display: block;
+    border: none;
+    border-bottom: 2px solid black;
+    width: 530px;
+    font-size: 15px;
+    background-color: transparent;
+    font-family: 'Fira Sans', sans-serif;
+    margin-bottom: 50px;
+}
+
+.confirmButton {
+    width: 100px;
+    height: 30px;
 }

@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
 
   registerForm: FormGroup = new FormGroup({
     fcName: new FormControl('', Validators.required),
-    fcAge: new FormControl(0, Validators.min(1)),
+    fcAge: new FormControl('', Validators.min(1)),
     fcEmail: new FormControl('', Validators.required),
     fcPassword: new FormControl('', Validators.required),
     fcPassword2: new FormControl('', Validators.required),
@@ -60,13 +60,13 @@ export class RegisterComponent implements OnInit {
         email: this.registerForm.value.fcEmail,
         password: this.registerForm.value.fcPassword,
       };
-
       console.log(payload);
     }
   }
 
-  async register() {
-    var result: any = await this.api
+  async registerUser() {
+    if (this.registerForm.value['fcPassword'] === this.registerForm.value['fcPassword2']){
+      var result: any = await this.api
       .post(environment.API_URL + '/user/register', {
         name: this.registerForm.value.fcName,
         age: this.registerForm.value.fcAge,
@@ -74,12 +74,16 @@ export class RegisterComponent implements OnInit {
         password: this.registerForm.value.fcPassword,
       })
       .toPromise();
-
-    if (result.success) {
-      this.nav('home');
+      
+      if (result.success) {
+        this.nav('home');
+      }
+      console.log(result.success);
+      this.requestResult = result.data;
     }
-    console.log(result.success);
-    this.requestResult = result.data;
+    else {
+      alert ("Password does not match");
+    }
   }
 
   nav(destination: string) {

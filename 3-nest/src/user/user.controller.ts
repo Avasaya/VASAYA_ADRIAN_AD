@@ -41,14 +41,12 @@ export class UserController {
             return "No parameters added";
     }
 
-    @Get("search/:term")
+    @Get("/search/:term")
     searchUser(@Param('term') term)
     {
         return this.userService.searchUser(term);
     }
 
-
-   
     @Patch("/:id")
     patchUser(@Param('id') id, @Body() body:any)
     {

@@ -1,8 +1,19 @@
+<nav class="sticky">
+    <form class="inputs" id="search" [formGroup]="registerForm">
+        <h1>My 4Portal</h1>
+        <input class="searhcMe" type="text" name="search" placeholder="search" formControlName="fcSearch" />
+        <button class="button2" (click)="display()"><h2>CLICK TO GET LIST</h2></button>
+        <button type="submit" class="button1" [disabled]="!registerForm.valid" [formGroup]="registerForm" (click)="getIDAndTerm()"><h2>CLICK TO SEARCH LIST</h2></button>
+        <button type="submit" class="button3" [disabled]="!registerForm.valid" [formGroup]="registerForm" (click)="deleteUser()"><h2>DELETE</h2></button>
+        <button class="button4" (click)="nav('login')"><h2>Logout</h2></button>
+        <button class="button5" (click)="patchUser()"><h2>Edit User</h2></button>
+    </form>
+</nav>
+
 <div class="mainContent">
-    <button (click)="display()"><h2>CLICK TO VIEW LIST</h2></button>
     <div class="container">
-        <table class="tableDisplay">
-            <thead>
+        <table class="content-table">
+            <thead *ngIf="showAll">
                 <tr>
                     <th>User ID</th>
                     <th>User Name</th>
@@ -10,19 +21,62 @@
                     <th>User Email</th>
                 </tr>
             </thead>
-            <br>
-            <br>
             <tbody>
-                <tr *ngFor="let result of requestResult">
-                    <td>{{ result.id }}</td>
 
-                    <td>{{ result.name }}</td>
+                <ng-container *ngIf="showAll; then all; else idd">
+                </ng-container>
+                <ng-container *ngIf="showEdit; then edit">
+                </ng-container>
 
-                    <td>{{ result.age }}</td>
-                    <td>{{ result.email }}</td>
-                    <br><br>
-                </tr>
-            </tbody>
-        </table>
+                <ng-template #all>
+                    <tr *ngFor="let result of requestResult">
+                        <td>{{ result.id }}</td>
+                        <td>{{ result.name }}</td>
+                        <td>{{ result.age }}</td>
+                        <td>{{ result.email }}</td>
+                        <br><br>
+                    </tr>
+                </ng-template>
+
+                <ng-template #idd>
+
+                    <tr *ngIf="showId">
+                        <td>{{requestResult.id}}</td>
+
+                        <td>{{requestResult.name }}</td>
+
+                        <td>{{requestResult.age}}</td>
+                        <td>{{requestResult.email}}</td>
+                        <br><br>
+                    </tr>
+                </ng-template>
+
+                <ng-template #edit>
+                    <div class="register">
+                        <form class="inputss" id="login" method="get" action="login.php" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+                            <label class="label1"><b>Name<br /> </b>
+                  </label>
+                            <input class="input1" type="!name" name="name" id="name" placeholder={{requestResult.name}} formControlName="fcName" />
+                            <label class="label1"><b>Age<br /> </b>
+                  </label>
+                            <input class="input1" type="number" name="Age1" id="Age1" placeholder={{requestResult.age}} formControlName="fcAge" />
+                            <label class="label1"><b>Email<br /> </b>
+                  </label>
+                            <input class="input1" type="email" name="email1" id="email1" placeholder={{requestResult.email}} formControlName="fcEmail" />
+                            <label class="label1"><b>Password<br /> </b>
+                  </label>
+                            <input class="input1" type="password" name="pass" id="pass2" placeholder={{requestResult.password}} formControlName="fcPassword" />
+                            <label class="label1"><b>Confirm Password<br /> </b>
+                  </label>
+                            <input class="input1" type="password" name="pass" id="pass" placeholder={{requestResult.password}} formControlName="fcPassword2" />
+                            <br /><br />
+                            <button class="confirmButton" type="submit" id="createAcc" (click)="patchUserConfirm()">
+                    Confirm Edit</button
+                  ><br /><br />
+                </form>
     </div>
+    </ng-template>
+    </tbody>
+    </table>
+</div>
 </div>
