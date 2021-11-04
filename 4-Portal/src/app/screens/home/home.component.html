@@ -61,7 +61,7 @@
 
                 <ng-template #edit>
                     <div class="register">
-                        <form class="inputss" id="login" method="get" action="login.php" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+                        <form class="inputss" [formGroup]="editForm" (ngSubmit)="onSubmit()">
                             <label class="label1"><b>Name<br /> </b>
                   </label>
                             <input class="input1" type="!name" name="name" id="name" placeholder={{requestResult.name}} formControlName="fcName" />

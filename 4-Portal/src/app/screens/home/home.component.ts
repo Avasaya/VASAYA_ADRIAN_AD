@@ -46,6 +46,7 @@ export class HomeComponent implements OnInit {
     this.showAll = true;
     this.showHeader = true;
     if(result.success){
+        this.requestResult = result.data;
         result.data.forEach((json: any) => {
         var tempU = User.fromJson(json.id, json);
         if (tempU != null) temp.push(tempU);
