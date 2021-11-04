@@ -1,24 +1,24 @@
 <nav class="sticky">
-    <form class="inputs" id="search" [formGroup]="registerForm">
+    <form class="inputs" id="search" [formGroup]="checkForm">
         <h1>My 4Portal</h1>
         <input class="searhcMe" type="text" name="search" placeholder="search" formControlName="fcSearch" />
-        <button class="button2" (click)="display()"><h2>CLICK TO GET LIST</h2></button>
-        <button type="submit" class="button1" [disabled]="!registerForm.valid" [formGroup]="registerForm" (click)="getIDAndTerm()"><h2>CLICK TO SEARCH LIST</h2></button>
-        <button type="submit" class="button3" [disabled]="!registerForm.valid" [formGroup]="registerForm" (click)="deleteUser()"><h2>DELETE</h2></button>
-        <button class="button4" (click)="nav('login')"><h2>Logout</h2></button>
-        <button class="button5" (click)="patchUser()"><h2>Edit User</h2></button>
+        <button class="button1" (click)="display()"><h2>BACK</h2></button>
+        <button type="submit" class="button2" [disabled]="!checkForm.valid" [formGroup]="checkForm" (click)="getIDAndTerm()"><h2>SEARCH</h2></button>
+        <button class="button3" (click)="nav('login')"><h2>Logout</h2></button>
     </form>
 </nav>
 
 <div class="mainContent">
     <div class="container">
         <table class="content-table">
-            <thead *ngIf="showAll">
+            <thead *ngIf="showHeader">
                 <tr>
+                    <th>No</th>
                     <th>User ID</th>
                     <th>User Name</th>
                     <th>User Age</th>
                     <th>User Email</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,11 +29,15 @@
                 </ng-container>
 
                 <ng-template #all>
-                    <tr *ngFor="let result of requestResult">
-                        <td>{{ result.id }}</td>
-                        <td>{{ result.name }}</td>
-                        <td>{{ result.age }}</td>
-                        <td>{{ result.email }}</td>
+                    <tr *ngFor="let user of users; index as i">
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.age }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><button class="deleteButton" (click)="deleteUser(i)">DELETE</button>
+                            <button class="editButton" (click)="patchUser(i)">EDIT</button>
+                        </td>
                         <br><br>
                     </tr>
                 </ng-template>
@@ -41,12 +45,16 @@
                 <ng-template #idd>
 
                     <tr *ngIf="showId">
+                        <td>{{ 1 }}</td>
                         <td>{{requestResult.id}}</td>
 
                         <td>{{requestResult.name }}</td>
 
                         <td>{{requestResult.age}}</td>
                         <td>{{requestResult.email}}</td>
+                        <td><button class="deleteButton" (click)="deleteUser(0)">DELETE</button>
+                            <button class="editButton" (click)="patchUser(0)">EDIT</button>
+                        </td>
                         <br><br>
                     </tr>
                 </ng-template>
@@ -63,12 +71,6 @@
                             <label class="label1"><b>Email<br /> </b>
                   </label>
                             <input class="input1" type="email" name="email1" id="email1" placeholder={{requestResult.email}} formControlName="fcEmail" />
-                            <label class="label1"><b>Password<br /> </b>
-                  </label>
-                            <input class="input1" type="password" name="pass" id="pass2" placeholder={{requestResult.password}} formControlName="fcPassword" />
-                            <label class="label1"><b>Confirm Password<br /> </b>
-                  </label>
-                            <input class="input1" type="password" name="pass" id="pass" placeholder={{requestResult.password}} formControlName="fcPassword2" />
                             <br /><br />
                             <button class="confirmButton" type="submit" id="createAcc" (click)="patchUserConfirm()">
                     Confirm Edit</button

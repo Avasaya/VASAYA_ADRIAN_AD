@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-
+import { User } from './home.model';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,12 +12,16 @@ import { environment } from 'src/environments/environment';
 export class HomeComponent implements OnInit {
   requestResult: any;
   payload: any;
+  showHeader: boolean = true;
   showId: boolean = true;
   showAll: boolean = true;
   showEdit: boolean = false;
   error: string = '';
+  users: Array<User> = [];
 
-  registerForm: FormGroup = new FormGroup({
+ 
+
+  checkForm: FormGroup = new FormGroup({
     fcSearch: new FormControl('', Validators.required),
   });
 
@@ -30,24 +34,29 @@ export class HomeComponent implements OnInit {
   });
   
   constructor(private router: Router, private api: HttpClient) { }
-
-
   ngOnInit(): void {
       this.display();
   }
  
   async display() {
     var result:any = await this.api.get(environment.API_URL + "/user/all").toPromise();
+    var temp: Array<User> = [];
+    this.users = temp;
     this.showEdit = false;
     this.showAll = true;
-    this.requestResult = result.data
-    console.log(result.success);
+    this.showHeader = true;
+    if(result.success){
+        result.data.forEach((json: any) => {
+        var tempU = User.fromJson(json.id, json);
+        if (tempU != null) temp.push(tempU);
+      });
+    }
 }
 
 async getIDAndTerm() {
-  if (this.registerForm.value.fcSearch.length > 30){
+  if (this.checkForm.value.fcSearch.length > 30){
     try {
-      var result:any = await this.api.get(environment.API_URL + "/user/"+ this.registerForm.value.fcSearch).toPromise();
+      var result:any = await this.api.get(environment.API_URL + "/user/"+ this.checkForm.value.fcSearch).toPromise();
       if (result.success){
         this.showAll = false;
         this.showId = true;
@@ -56,14 +65,14 @@ async getIDAndTerm() {
         this.requestResult.name = result.data.name
         this.requestResult.age = result.data.age
         this.requestResult.email = result.data.email
-        console.log(this.registerForm.value.fcSearch.length);
+        console.log(this.checkForm.value.fcSearch.length);
         console.log(this.showId);
       }
       else{
         this.display();
         this.showAll = true;
         alert("ID not found in database");
-        console.log(this.registerForm.value.fcSearch.length);
+        console.log(this.checkForm.value.fcSearch.length);
       }
     } catch (e) {
       console.log(e);
@@ -72,9 +81,9 @@ async getIDAndTerm() {
 
   else {
     try {
-      var result:any = await this.api.get(environment.API_URL + "/user/search/"+this.registerForm.value.fcSearch).toPromise();
+      var result:any = await this.api.get(environment.API_URL + "/user/search/"+this.checkForm.value.fcSearch).toPromise();
       if (result.success){
-        this.requestResult = result.data
+        this.users = result.data
         console.log(result.success);
       }
       else{
@@ -82,7 +91,7 @@ async getIDAndTerm() {
         this.showAll = true;
         this.showEdit = false;
         alert("Seems like it is not in our database");
-        console.log(this.registerForm.value.fcSearch.length);
+        console.log(this.checkForm.value.fcSearch.length);
       }
     } catch (e) {
       console.log(e);
@@ -90,22 +99,19 @@ async getIDAndTerm() {
     }
   }  
 
-  async deleteUser(){
-    try{
-
-      var result:any = await this.api.delete(environment.API_URL + "/user/"+this.registerForm.value.fcSearch,
-      ).toPromise();
-      
-      this.requestResult = result.data
-      alert ("Successfully Deleted ")
-      this.display();
-      console.log(result.success);
+  async deleteUser(i : number){
+    var decision = confirm('Delete ' + this.users[i].name + '?');
+    if (decision){
+        var result:any = await this.api.delete(environment.API_URL + `/user/${this.users[i].id}`).toPromise();
+        if(result.success){
+          this.display();
+          this.display();
+          this.showAll = true
+          alert("Successfully Deleted");
+        }
     }
-    catch(e) {
-      console.log(e);
-    }
+    console.log(i);
   }
-  
   onSubmit() {
     if (
       this.editForm.value['fcPassword'] !==
@@ -139,16 +145,17 @@ async getIDAndTerm() {
 
   }
 
-  async patchUser(){
-    var result:any = await this.api.get(environment.API_URL + "/user/"+ this.registerForm.value.fcSearch).toPromise();
+  async patchUser(i: number){
+    var result:any = await this.api.get(environment.API_URL + `/user/${this.users[i].id}`).toPromise();
     if (result.success){
-        this.requestResult.id = result.data.id
-        this.requestResult.name = result.data.name
-        this.requestResult.age = result.data.age
-        this.requestResult.email = result.data.email
+    this.requestResult.id = this.users[i].id
+    this.requestResult.name = this.users[i].name
+    this.requestResult.age = this.users[i].age
+    this.requestResult.email = this.users[i].email
       this.showId = false;
       this.showAll = false;
       this.showEdit = true;
+      this.showHeader = false;
     }
     else {
       alert("User not found");
@@ -156,13 +163,12 @@ async getIDAndTerm() {
       this.showAll = true;
       this.showEdit = false;
     }
-    
     this.clearForm();
   }
 
   async patchUserConfirm(){
     var result: any = await this.api
-      .patch(environment.API_URL + "/user/"+this.registerForm.value.fcSearch, {
+      .patch(environment.API_URL + "/user/"+this.requestResult.id, {
         name: this.editForm.value.fcName,
         age: this.editForm.value.fcAge,
         email: this.editForm.value.fcEmail,
@@ -174,6 +180,9 @@ async getIDAndTerm() {
         this.display();
         this.display();
         this.showEdit = false;
+      }
+      else {
+        alert("Email Already exists");
       }
   }
 

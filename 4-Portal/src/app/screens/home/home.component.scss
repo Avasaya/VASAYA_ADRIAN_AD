@@ -9,7 +9,7 @@
 }
 
 .container {
-    padding-top: 8%;
+    padding-top: 7%;
 }
 
 .content-table {
@@ -70,13 +70,7 @@ input {
 }
 
 button:disabled,
-.button1[disabled] {
-    background-color: #2e2e2e;
-    color: grey;
-}
-
-button:disabled,
-.button3[disabled] {
+.button2[disabled] {
     background-color: #2e2e2e;
     color: grey;
 }
@@ -90,10 +84,10 @@ h1 {
 }
 
 .button1 {
-    top: 75px;
-    left: 41%;
+    top: 85px;
+    left: 7.3%;
     margin: 0;
-    width: 13%;
+    width: 3.5%;
     text-align: center;
     color: white;
     padding: 2px;
@@ -104,10 +98,10 @@ h1 {
 }
 
 .button2 {
-    top: 75px;
-    left: 26%;
+    top: 13px;
+    left: 76.5%;
     margin: 0;
-    width: 11%;
+    width: 5%;
     text-align: center;
     color: white;
     padding: 2px;
@@ -118,39 +112,11 @@ h1 {
 }
 
 .button3 {
-    top: 75px;
-    left: 58%;
-    margin: 0;
-    width: 5%;
-    text-align: center;
-    color: white;
-    padding: 2px;
-    border-radius: 3px;
-    position: fixed;
-    border: none;
-    background-color: #2e2e2e;
-}
-
-.button4 {
     top: 2px;
     left: 95.3%;
     margin: 0;
     width: 5%;
     font-size: 0.7em;
-    text-align: center;
-    color: white;
-    padding: 2px;
-    border-radius: 3px;
-    position: fixed;
-    border: none;
-    background-color: #2e2e2e;
-}
-
-.button5 {
-    top: 75px;
-    left: 68%;
-    margin: 0;
-    width: 5%;
     text-align: center;
     color: white;
     padding: 2px;
@@ -192,4 +158,31 @@ input:focus {
 .confirmButton {
     width: 100px;
     height: 30px;
+}
+
+.deleteButton {
+    margin-right: 13px;
+    font-family: 'Fira Sans', sans-serif;
+    padding-right: 5px;
+    padding-left: 5px;
+    border-radius: 2px;
+    font-weight: bold;
+    border: none;
+}
+
+.editButton {
+    font-family: 'Fira Sans', sans-serif;
+    padding-right: 5px;
+    padding-left: 5px;
+    border-radius: 2px;
+    font-weight: bold;
+    border: none;
+}
+
+.editButton:hover {
+    background-color: rgb(170, 170, 170);
+}
+
+.deleteButton:hover {
+    background-color: rgb(170, 170, 170);
 }
